@@ -1,0 +1,23 @@
+{
+    "name": "url-shortener-saas",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.968.0",
+        "@aws-sdk/lib-dynamodb": "^3.968.0",
+        "@pulumi/aws": "^7.0.0",
+        "@pulumi/awsx": "^3.0.0",
+        "@pulumi/pulumi": "^3.113.0",
+        "@types/aws-lambda": "^8.10.159",
+        "@types/mime": "^3.0.4",
+        "@types/mime-types": "^3.0.1",
+        "@types/uuid": "^10.0.0",
+        "esbuild": "^0.27.2",
+        "mime": "^4.1.0",
+        "mime-types": "^3.0.2",
+        "uuid": "^13.0.0"
+    }
+}
