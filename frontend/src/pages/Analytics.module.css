@@ -1,0 +1,738 @@
+.analytics {
+  padding: var(--space-3xl) 0;
+  min-height: calc(100vh - 72px);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-2xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  flex: 1;
+  min-width: 300px;
+}
+
+.title {
+  margin-bottom: var(--space-sm);
+}
+
+.urlInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.shortCodeBadge {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-accent);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+
+.originalUrl {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.dateRangePicker {
+  display: flex;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 4px;
+}
+
+.dateRangeButton {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.dateRangeButton:hover {
+  color: var(--color-text);
+}
+
+.dateRangeButton.active {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4xl);
+  gap: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4xl);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.error svg {
+  margin-bottom: var(--space-md);
+  color: var(--color-error);
+}
+
+.error h3 {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.retryButton {
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-primary);
+  color: var(--color-bg);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.retryButton:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+/* Empty State */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4xl);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty svg {
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty h3 {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-fast);
+}
+
+.statCard:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .statCard:hover {
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.3);
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-lg);
+  color: var(--color-accent);
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Chart Cards */
+.chartCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.cardTitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xl);
+}
+
+.chartsRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.chartsRow .chartCard {
+  margin-bottom: 0;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartsRow .chartCard .pieChartContainer,
+.chartsRow .chartCard .barChartContainer,
+.chartsRow .chartCard .countryList,
+.chartsRow .chartCard .referrerList,
+.chartsRow .chartCard .topUrlsList {
+  flex: 1;
+}
+
+/* Timeline Chart */
+.timelineChart {
+  position: relative;
+  height: 250px;
+  display: flex;
+}
+
+.chartBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  flex: 1;
+  height: 100%;
+  padding-right: var(--space-xl);
+}
+
+.barContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+}
+
+.bar {
+  width: 100%;
+  max-width: 40px;
+  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-primary) 100%);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  min-height: 4px;
+  animation: barGrow 0.5s ease-out forwards;
+  transform-origin: bottom;
+}
+
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+.barLabel {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.chartYAxis {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: right;
+  width: 40px;
+}
+
+.noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Pie/Donut Chart */
+.pieChartContainer {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.donutChart {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.donutSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.donutSegment {
+  transition: stroke-width 0.2s ease;
+}
+
+.donutSegment:hover {
+  stroke-width: 14;
+}
+
+.donutCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.donutValue {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.donutLabel {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.legendName {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.legendValue {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* Horizontal Bar Chart */
+.barChartContainer {
+  min-height: 150px;
+}
+
+.horizontalBars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.horizontalBarRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.horizontalBarLabel {
+  width: 100px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.deviceIcon {
+  display: flex;
+  color: var(--color-text-muted);
+}
+
+.horizontalBarWrapper {
+  flex: 1;
+  height: 24px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.horizontalBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-primary) 100%);
+  border-radius: var(--radius-md);
+  animation: barGrowHorizontal 0.5s ease-out forwards;
+  transform-origin: left;
+}
+
+@keyframes barGrowHorizontal {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.horizontalBarValue {
+  width: 100px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* Country List */
+.countryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.countryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+.countryRank {
+  width: 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.countryName {
+  width: 140px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.countryBarWrapper {
+  flex: 1;
+  height: 8px;
+  background: var(--color-bg-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.countryBar {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 4px;
+}
+
+.countryValue {
+  width: 60px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* Referrer List */
+.referrerList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.referrerRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+.referrerIcon {
+  display: flex;
+  color: var(--color-text-muted);
+}
+
+.referrerDomain {
+  width: 140px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.referrerBarWrapper {
+  flex: 1;
+  height: 8px;
+  background: var(--color-bg-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.referrerBar {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+.referrerValue {
+  width: 60px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* Top URLs List */
+.topUrlsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.topUrlRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.topUrlRow:hover {
+  border-color: var(--color-accent);
+  background: var(--color-bg-alt);
+}
+
+.topUrlRank {
+  width: 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.topUrlInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.topUrlCode {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+
+.topUrlOriginal {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topUrlClicks {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Cities Grid */
+.citiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.cityCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.cityRank {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+  border-radius: 50%;
+}
+
+.cityInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.cityName {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.cityCountry {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.cityClicks {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .chartsRow .chartCard {
+    min-height: auto;
+  }
+
+  .pieChartContainer {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .headerActions {
+    justify-content: flex-start;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .horizontalBarLabel {
+    width: 80px;
+  }
+
+  .horizontalBarValue {
+    width: 80px;
+  }
+
+  .countryName {
+    width: 100px;
+  }
+
+  .referrerDomain {
+    width: 100px;
+  }
+
+  .citiesGrid {
+    grid-template-columns: 1fr;
+  }
+}

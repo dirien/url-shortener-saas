@@ -10,6 +10,7 @@ A production-ready URL Shortener SaaS built with Pulumi TypeScript, AWS Lambda, 
 
 - **URL Shortening**: Create short URLs with auto-generated or custom aliases
 - **Click Tracking**: Real-time analytics for each shortened URL
+- **Advanced Analytics**: Comprehensive analytics dashboard with browser, device, country, and referrer breakdowns
 - **Modern Frontend**: React SPA with responsive design and dark mode support
 - **Serverless Backend**: AWS Lambda functions with DynamoDB storage
 - **Global CDN**: CloudFront distribution for fast, secure access worldwide
@@ -61,6 +62,19 @@ A production-ready URL Shortener SaaS built with Pulumi TypeScript, AWS Lambda, 
 | GET | /api/stats/{shortCode} | Get URL statistics |
 | GET | /api/urls | List all URLs |
 | DELETE | /api/{shortCode} | Delete a URL |
+| GET | /api/analytics/overview | Get aggregated analytics across all URLs |
+| GET | /api/analytics/{shortCode} | Get detailed analytics for a specific URL |
+
+### Analytics Query Parameters
+
+The analytics endpoints support the following query parameters:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| from | ISO 8601 date | 7 days ago | Start of date range |
+| to | ISO 8601 date | now | End of date range |
+| granularity | hour/day/week | day | Timeline aggregation granularity |
+| limit | number | 10 | Number of top URLs to return (overview only) |
 
 ## Prerequisites
 
@@ -132,17 +146,18 @@ url-shortener/
 ├── Pulumi.yaml           # Pulumi project configuration
 ├── frontend/             # React frontend application
 │   ├── src/
-│   │   ├── pages/        # Landing, Dashboard, Docs pages
+│   │   ├── pages/        # Landing, Dashboard, Analytics, Docs pages
 │   │   ├── components/   # Header, Footer components
 │   │   ├── utils/        # API client
 │   │   └── index.css     # Global styles
 │   └── package.json
 ├── lambda/               # AWS Lambda functions
 │   ├── shorten.ts        # Create short URL
-│   ├── redirect.ts       # Redirect handler
+│   ├── redirect.ts       # Redirect handler with analytics tracking
 │   ├── stats.ts          # Get URL statistics
 │   ├── list.ts           # List all URLs
 │   ├── delete.ts         # Delete URL
+│   ├── analytics.ts      # Analytics aggregation handler
 │   ├── utils.ts          # Shared utilities
 │   ├── utils.test.ts     # Unit tests
 │   ├── handlers.test.ts  # Integration tests
