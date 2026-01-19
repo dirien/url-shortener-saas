@@ -85,7 +85,7 @@ const shortenFunction = new aws.lambda.Function("shorten-function", {
   timeout: 30,
   memorySize: 256,
   code: new pulumi.asset.AssetArchive({
-    ".": new pulumi.asset.FileArchive("./lambda"),
+    ".": new pulumi.asset.FileArchive("./lambda/dist"),
   }),
   environment: {
     variables: {
@@ -107,7 +107,7 @@ const redirectFunction = new aws.lambda.Function("redirect-function", {
   timeout: 30,
   memorySize: 256,
   code: new pulumi.asset.AssetArchive({
-    ".": new pulumi.asset.FileArchive("./lambda"),
+    ".": new pulumi.asset.FileArchive("./lambda/dist"),
   }),
   environment: {
     variables: {
@@ -129,7 +129,7 @@ const statsFunction = new aws.lambda.Function("stats-function", {
   timeout: 30,
   memorySize: 256,
   code: new pulumi.asset.AssetArchive({
-    ".": new pulumi.asset.FileArchive("./lambda"),
+    ".": new pulumi.asset.FileArchive("./lambda/dist"),
   }),
   environment: {
     variables: {
@@ -151,7 +151,7 @@ const listFunction = new aws.lambda.Function("list-function", {
   timeout: 30,
   memorySize: 256,
   code: new pulumi.asset.AssetArchive({
-    ".": new pulumi.asset.FileArchive("./lambda"),
+    ".": new pulumi.asset.FileArchive("./lambda/dist"),
   }),
   environment: {
     variables: {
@@ -173,7 +173,7 @@ const deleteFunction = new aws.lambda.Function("delete-function", {
   timeout: 30,
   memorySize: 256,
   code: new pulumi.asset.AssetArchive({
-    ".": new pulumi.asset.FileArchive("./lambda"),
+    ".": new pulumi.asset.FileArchive("./lambda/dist"),
   }),
   environment: {
     variables: {
@@ -617,8 +617,7 @@ const stage = new aws.apigateway.Stage("api-stage", {
 // ========================================
 // S3 Bucket for Frontend
 // ========================================
-const frontendBucket = new aws.s3.BucketV2("frontend-bucket", {
-  bucket: `${projectName}-frontend-${stack}-${Date.now()}`,
+const frontendBucket = new aws.s3.Bucket("frontend-bucket", {
   tags: {
     Environment: stack,
     Project: projectName,
@@ -647,7 +646,7 @@ const frontendBucketPublicAccess = new aws.s3.BucketPublicAccessBlock(
   }
 );
 
-const frontendBucketWebsite = new aws.s3.BucketWebsiteConfigurationV2(
+const frontendBucketWebsite = new aws.s3.BucketWebsiteConfiguration(
   "frontend-bucket-website",
   {
     bucket: frontendBucket.id,
