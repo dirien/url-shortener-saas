@@ -42,7 +42,7 @@ A production-ready URL Shortener SaaS built with Pulumi TypeScript, AWS Lambda, 
 - Pulumi ESC for secrets management
 
 ### Frontend (React + Vite)
-- React 18 with TypeScript
+- React 19 with TypeScript
 - React Router for navigation
 - Framer Motion for animations
 - CSS Modules for styling
