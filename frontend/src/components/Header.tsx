@@ -13,6 +13,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   const navItems = [
     { path: '/', label: 'Home' },
     { path: '/dashboard', label: 'Dashboard' },
+    { path: '/analytics', label: 'Analytics' },
     { path: '/docs', label: 'Docs' },
   ];
 

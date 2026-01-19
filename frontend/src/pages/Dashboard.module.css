@@ -293,6 +293,23 @@
   opacity: 0.7;
 }
 
+.analyticsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.analyticsButton:hover {
+  background: var(--color-bg-alt);
+  color: var(--color-accent);
+}
+
 .deleteButton {
   display: flex;
   align-items: center;

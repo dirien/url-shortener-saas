@@ -1,4 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api, type UrlEntry } from '../utils/api';
 import styles from './Dashboard.module.css';
@@ -275,6 +276,16 @@ export default function Dashboard() {
                         </svg>
                         <span>{formatDate(urlEntry.createdAt)}</span>
                       </div>
+                      <Link
+                        to={`/analytics/${urlEntry.shortCode}`}
+                        className={styles.analyticsButton}
+                        aria-label="View Analytics"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M3 3v18h18" />
+                          <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                        </svg>
+                      </Link>
                       <button
                         className={styles.deleteButton}
                         onClick={() => handleDelete(urlEntry.shortCode)}

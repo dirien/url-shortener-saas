@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "npm run build:shorten && npm run build:redirect && npm run build:stats && npm run build:list && npm run build:delete",
+    "build": "npm run build:shorten && npm run build:redirect && npm run build:stats && npm run build:list && npm run build:delete && npm run build:analytics",
     "build:shorten": "esbuild shorten.ts --bundle --platform=node --target=node20 --outfile=dist/shorten.js --external:@aws-sdk/*",
     "build:redirect": "esbuild redirect.ts --bundle --platform=node --target=node20 --outfile=dist/redirect.js --external:@aws-sdk/*",
     "build:stats": "esbuild stats.ts --bundle --platform=node --target=node20 --outfile=dist/stats.js --external:@aws-sdk/*",
     "build:list": "esbuild list.ts --bundle --platform=node --target=node20 --outfile=dist/list.js --external:@aws-sdk/*",
     "build:delete": "esbuild delete.ts --bundle --platform=node --target=node20 --outfile=dist/delete.js --external:@aws-sdk/*",
+    "build:analytics": "esbuild analytics.ts --bundle --platform=node --target=node20 --outfile=dist/analytics.js --external:@aws-sdk/*",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },

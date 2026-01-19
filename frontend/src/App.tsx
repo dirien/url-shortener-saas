@@ -4,6 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
+import Analytics from './pages/Analytics'
 import Docs from './pages/Docs'
 import './App.css'
 
@@ -30,6 +31,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/analytics/:shortCode" element={<Analytics />} />
           <Route path="/docs" element={<Docs />} />
         </Routes>
       </main>

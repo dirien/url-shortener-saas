@@ -1,6 +1,6 @@
 # E2E Test Prompts for URL Shortener
 
-Use these prompts with the `webapp-testing` skill to test the URL shortener application.
+Use the `/agent-browser` skill to run these tests.
 
 ## Configuration
 
@@ -108,4 +108,198 @@ Test error handling for invalid inputs:
 4. Verify an appropriate error message is displayed
 5. Try to shorten an empty URL
 6. Verify the form validation works
+```
+
+---
+
+## Analytics Dashboard Tests
+
+The following tests verify the analytics dashboard feature. See `feature-prompt.md` for full feature specification.
+
+## Test 9: Analytics Page Navigation
+
+```
+Test that the analytics page is accessible from navigation:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net
+2. Find and click the "Analytics" link in the navigation bar
+3. Verify the URL changed to /analytics
+4. Take a screenshot
+5. Verify the page title contains "Analytics"
+6. Verify the date range picker is visible
+7. Verify at least one chart container is visible
+```
+
+## Test 10: Analytics Overview Loads
+
+```
+Test that the analytics overview page loads with data:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+2. Wait for the page to fully load (network idle)
+3. Take a screenshot
+4. Verify the following elements are present:
+   - Total Clicks metric card
+   - Unique Countries metric card
+   - Timeline chart (line chart showing clicks over time)
+   - Browser distribution chart (donut/pie chart)
+   - Device breakdown chart
+5. Verify no error messages are displayed
+```
+
+## Test 11: Analytics Date Filter
+
+```
+Test the date range filter functionality:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+2. Wait for the page to load
+3. Find the date range picker/selector
+4. Select "Last 30 days" option
+5. Wait for the charts to update (look for loading state or data change)
+6. Take a screenshot
+7. Verify the timeline chart X-axis shows approximately 30 data points
+8. Select "Last 7 days" option
+9. Verify the chart updates to show fewer data points
+10. Take a screenshot
+```
+
+## Test 12: URL-Specific Analytics
+
+```
+Test viewing analytics for a specific shortened URL:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+2. Wait for the URL list to load
+3. Find a URL row with a "View Analytics" or analytics icon button
+4. Click the analytics button for that URL
+5. Verify the URL changes to /analytics/{shortCode}
+6. Take a screenshot
+7. Verify the page shows analytics specific to that URL:
+   - The short code or original URL is displayed
+   - Click count is shown
+   - Timeline chart reflects this specific URL's data
+8. Verify a "Back to Overview" or similar navigation option exists
+```
+
+## Test 13: Analytics Charts Render
+
+```
+Test that all analytics charts render correctly:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+2. Wait for the page to fully load
+3. Verify the timeline/line chart:
+   - Has visible axes (X and Y)
+   - Has at least one data point or line
+   - Take a screenshot of the chart area
+4. Verify the browser distribution chart:
+   - Is a donut or pie chart
+   - Has a legend showing browser names
+   - Take a screenshot
+5. Verify the device breakdown:
+   - Shows Desktop, Mobile, Tablet categories
+   - Has percentage or count values
+6. Verify the geographic section:
+   - Shows country names or codes
+   - Has click counts per country
+   - Take a screenshot
+7. Verify the referrer sources section:
+   - Lists referrer domains
+   - Shows "Direct" traffic category
+   - Take a screenshot
+```
+
+## Test 14: Analytics Responsive Design
+
+```
+Test analytics page responsive behavior:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+2. Wait for the page to load
+3. Set viewport to desktop size (1280x800)
+4. Take a screenshot
+5. Verify charts are displayed in a 2-column layout
+6. Set viewport to tablet size (768x1024)
+7. Take a screenshot
+8. Verify charts stack vertically
+9. Set viewport to mobile size (375x667)
+10. Take a screenshot
+11. Verify:
+    - Navigation collapses to hamburger menu
+    - Metric cards stack vertically
+    - Charts are readable at mobile width
+```
+
+## Test 15: Analytics API Direct Test
+
+```
+Test the analytics API endpoints directly:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net
+2. Use JavaScript fetch to call GET /api/analytics/overview
+3. Verify response status is 200
+4. Verify the response contains:
+   - totalClicks (number)
+   - period object with from/to dates
+   - timeline array
+   - browsers array
+   - devices array
+5. Log the response summary
+6. Get a shortCode from the URL list
+7. Call GET /api/analytics/{shortCode}
+8. Verify response status is 200
+9. Verify response contains shortCode-specific data
+```
+
+## Test 16: Generate Test Clicks for Analytics
+
+```
+Prerequisite test to generate analytics data:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+2. Create a new short URL with a unique alias (e.g., "analytics-test-{timestamp}")
+3. Note the short code returned
+4. Open the short URL 5 times in sequence:
+   - Visit https://d1232drths1aav.cloudfront.net/api/{shortCode}
+   - Wait for redirect to complete
+   - Repeat 4 more times
+5. Navigate to /analytics/{shortCode}
+6. Verify the click count shows at least 5 clicks
+7. Verify the timeline chart shows today's date with clicks
+8. Take a screenshot as proof
+```
+
+## Test 17: Analytics Empty State
+
+```
+Test analytics display when no data is available:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+2. Create a brand new short URL with unique alias
+3. Immediately navigate to /analytics/{newShortCode}
+4. Verify the page handles the empty/zero state gracefully:
+   - Shows "No data yet" or similar message
+   - Charts display empty state (not broken)
+   - Total clicks shows 0
+5. Take a screenshot
+6. Verify no JavaScript errors in console
+```
+
+## Test 18: Analytics Dark Mode
+
+```
+Test analytics page in dark mode:
+
+1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+2. Wait for the page to load
+3. Find and click the dark mode toggle
+4. Wait for theme to switch
+5. Take a screenshot
+6. Verify:
+   - Charts have appropriate dark mode colors
+   - Text is readable against dark background
+   - No elements appear broken or invisible
+7. Toggle back to light mode
+8. Verify charts return to light theme colors
 ```

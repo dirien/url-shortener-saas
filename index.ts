@@ -7,13 +7,38 @@ const stack = pulumi.getStack();
 const projectName = "url-shortener";
 
 // ========================================
-// DynamoDB Table
+// DynamoDB Tables
 // ========================================
 const urlTable = new aws.dynamodb.Table("url-table", {
   name: `${projectName}-urls-${stack}`,
   billingMode: "PAY_PER_REQUEST",
   hashKey: "shortCode",
   attributes: [{ name: "shortCode", type: "S" }],
+  tags: {
+    Environment: stack,
+    Project: projectName,
+    ManagedBy: "Pulumi",
+  },
+});
+
+// Analytics events table
+const analyticsTable = new aws.dynamodb.Table("analytics-table", {
+  name: `${projectName}-analytics-${stack}`,
+  billingMode: "PAY_PER_REQUEST",
+  hashKey: "shortCode",
+  rangeKey: "timestamp",
+  attributes: [
+    { name: "shortCode", type: "S" },
+    { name: "timestamp", type: "S" },
+  ],
+  globalSecondaryIndexes: [
+    {
+      name: "by-date",
+      hashKey: "shortCode",
+      rangeKey: "timestamp",
+      projectionType: "ALL",
+    },
+  ],
   tags: {
     Environment: stack,
     Project: projectName,
@@ -61,8 +86,13 @@ const dynamoPolicy = new aws.iam.Policy("lambda-dynamo-policy", {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem",
           "dynamodb:Scan",
+          "dynamodb:Query",
         ],
-        Resource: urlTable.arn,
+        Resource: [
+          urlTable.arn,
+          analyticsTable.arn,
+          pulumi.interpolate`${analyticsTable.arn}/index/*`,
+        ],
       },
     ],
   }),
@@ -112,6 +142,7 @@ const redirectFunction = new aws.lambda.Function("redirect-function", {
   environment: {
     variables: {
       TABLE_NAME: urlTable.name,
+      ANALYTICS_TABLE_NAME: analyticsTable.name,
     },
   },
   tags: {
@@ -178,6 +209,29 @@ const deleteFunction = new aws.lambda.Function("delete-function", {
   environment: {
     variables: {
       TABLE_NAME: urlTable.name,
+    },
+  },
+  tags: {
+    Environment: stack,
+    Project: projectName,
+    ManagedBy: "Pulumi",
+  },
+});
+
+const analyticsFunction = new aws.lambda.Function("analytics-function", {
+  name: `${projectName}-analytics-${stack}`,
+  runtime: aws.lambda.Runtime.NodeJS20dX,
+  handler: "analytics.handler",
+  role: lambdaRole.arn,
+  timeout: 30,
+  memorySize: 256,
+  code: new pulumi.asset.AssetArchive({
+    ".": new pulumi.asset.FileArchive("./lambda/dist"),
+  }),
+  environment: {
+    variables: {
+      TABLE_NAME: urlTable.name,
+      ANALYTICS_TABLE_NAME: analyticsTable.name,
     },
   },
   tags: {
@@ -434,6 +488,184 @@ const statsOptionsIntegrationResponse = new aws.apigateway.IntegrationResponse(
   { dependsOn: [statsOptionsMethodResponse] }
 );
 
+// /analytics endpoint
+const analyticsResource = new aws.apigateway.Resource("analytics-resource", {
+  restApi: api.id,
+  parentId: api.rootResourceId,
+  pathPart: "analytics",
+});
+
+// /analytics/overview endpoint
+const analyticsOverviewResource = new aws.apigateway.Resource(
+  "analytics-overview-resource",
+  {
+    restApi: api.id,
+    parentId: analyticsResource.id,
+    pathPart: "overview",
+  }
+);
+
+const analyticsOverviewMethod = new aws.apigateway.Method(
+  "analytics-overview-get",
+  {
+    restApi: api.id,
+    resourceId: analyticsOverviewResource.id,
+    httpMethod: "GET",
+    authorization: "NONE",
+  }
+);
+
+const analyticsOverviewIntegration = new aws.apigateway.Integration(
+  "analytics-overview-integration",
+  {
+    restApi: api.id,
+    resourceId: analyticsOverviewResource.id,
+    httpMethod: analyticsOverviewMethod.httpMethod,
+    integrationHttpMethod: "POST",
+    type: "AWS_PROXY",
+    uri: analyticsFunction.invokeArn,
+  }
+);
+
+const analyticsOverviewOptionsMethod = new aws.apigateway.Method(
+  "analytics-overview-options",
+  {
+    restApi: api.id,
+    resourceId: analyticsOverviewResource.id,
+    httpMethod: "OPTIONS",
+    authorization: "NONE",
+  }
+);
+
+const analyticsOverviewOptionsIntegration = new aws.apigateway.Integration(
+  "analytics-overview-options-integration",
+  {
+    restApi: api.id,
+    resourceId: analyticsOverviewResource.id,
+    httpMethod: analyticsOverviewOptionsMethod.httpMethod,
+    type: "MOCK",
+    requestTemplates: {
+      "application/json": '{"statusCode": 200}',
+    },
+  }
+);
+
+const analyticsOverviewOptionsMethodResponse =
+  new aws.apigateway.MethodResponse("analytics-overview-options-response", {
+    restApi: api.id,
+    resourceId: analyticsOverviewResource.id,
+    httpMethod: analyticsOverviewOptionsMethod.httpMethod,
+    statusCode: "200",
+    responseParameters: {
+      "method.response.header.Access-Control-Allow-Headers": true,
+      "method.response.header.Access-Control-Allow-Methods": true,
+      "method.response.header.Access-Control-Allow-Origin": true,
+    },
+  });
+
+const analyticsOverviewOptionsIntegrationResponse =
+  new aws.apigateway.IntegrationResponse(
+    "analytics-overview-options-int-response",
+    {
+      restApi: api.id,
+      resourceId: analyticsOverviewResource.id,
+      httpMethod: analyticsOverviewOptionsMethod.httpMethod,
+      statusCode: "200",
+      responseParameters: {
+        "method.response.header.Access-Control-Allow-Headers":
+          "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+      },
+    },
+    { dependsOn: [analyticsOverviewOptionsMethodResponse] }
+  );
+
+// /analytics/{shortCode} endpoint
+const analyticsCodeResource = new aws.apigateway.Resource(
+  "analytics-code-resource",
+  {
+    restApi: api.id,
+    parentId: analyticsResource.id,
+    pathPart: "{shortCode}",
+  }
+);
+
+const analyticsCodeMethod = new aws.apigateway.Method("analytics-code-get", {
+  restApi: api.id,
+  resourceId: analyticsCodeResource.id,
+  httpMethod: "GET",
+  authorization: "NONE",
+});
+
+const analyticsCodeIntegration = new aws.apigateway.Integration(
+  "analytics-code-integration",
+  {
+    restApi: api.id,
+    resourceId: analyticsCodeResource.id,
+    httpMethod: analyticsCodeMethod.httpMethod,
+    integrationHttpMethod: "POST",
+    type: "AWS_PROXY",
+    uri: analyticsFunction.invokeArn,
+  }
+);
+
+const analyticsCodeOptionsMethod = new aws.apigateway.Method(
+  "analytics-code-options",
+  {
+    restApi: api.id,
+    resourceId: analyticsCodeResource.id,
+    httpMethod: "OPTIONS",
+    authorization: "NONE",
+  }
+);
+
+const analyticsCodeOptionsIntegration = new aws.apigateway.Integration(
+  "analytics-code-options-integration",
+  {
+    restApi: api.id,
+    resourceId: analyticsCodeResource.id,
+    httpMethod: analyticsCodeOptionsMethod.httpMethod,
+    type: "MOCK",
+    requestTemplates: {
+      "application/json": '{"statusCode": 200}',
+    },
+  }
+);
+
+const analyticsCodeOptionsMethodResponse = new aws.apigateway.MethodResponse(
+  "analytics-code-options-response",
+  {
+    restApi: api.id,
+    resourceId: analyticsCodeResource.id,
+    httpMethod: analyticsCodeOptionsMethod.httpMethod,
+    statusCode: "200",
+    responseParameters: {
+      "method.response.header.Access-Control-Allow-Headers": true,
+      "method.response.header.Access-Control-Allow-Methods": true,
+      "method.response.header.Access-Control-Allow-Origin": true,
+    },
+  }
+);
+
+const analyticsCodeOptionsIntegrationResponse =
+  new aws.apigateway.IntegrationResponse(
+    "analytics-code-options-int-response",
+    {
+      restApi: api.id,
+      resourceId: analyticsCodeResource.id,
+      httpMethod: analyticsCodeOptionsMethod.httpMethod,
+      statusCode: "200",
+      responseParameters: {
+        "method.response.header.Access-Control-Allow-Headers":
+          "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+      },
+    },
+    { dependsOn: [analyticsCodeOptionsMethodResponse] }
+  );
+
 // /{shortCode} endpoint (redirect)
 const redirectResource = new aws.apigateway.Resource("redirect-resource", {
   restApi: api.id,
@@ -567,6 +799,13 @@ const deletePermission = new aws.lambda.Permission("delete-permission", {
   sourceArn: pulumi.interpolate`${api.executionArn}/*/*`,
 });
 
+const analyticsPermission = new aws.lambda.Permission("analytics-permission", {
+  action: "lambda:InvokeFunction",
+  function: analyticsFunction.name,
+  principal: "apigateway.amazonaws.com",
+  sourceArn: pulumi.interpolate`${api.executionArn}/*/*`,
+});
+
 // API Gateway Deployment
 const deployment = new aws.apigateway.Deployment(
   "api-deployment",
@@ -580,10 +819,14 @@ const deployment = new aws.apigateway.Deployment(
           statsIntegration.id,
           urlsIntegration.id,
           deleteIntegration.id,
+          analyticsOverviewIntegration.id,
+          analyticsCodeIntegration.id,
           shortenOptionsIntegration.id,
           redirectOptionsIntegration.id,
           statsOptionsIntegration.id,
           urlsOptionsIntegration.id,
+          analyticsOverviewOptionsIntegration.id,
+          analyticsCodeOptionsIntegration.id,
         ])
         .apply((ids) => JSON.stringify(ids)),
     },
@@ -595,10 +838,14 @@ const deployment = new aws.apigateway.Deployment(
       statsIntegration,
       urlsIntegration,
       deleteIntegration,
+      analyticsOverviewIntegration,
+      analyticsCodeIntegration,
       shortenOptionsIntegrationResponse,
       redirectOptionsIntegrationResponse,
       statsOptionsIntegrationResponse,
       urlsOptionsIntegrationResponse,
+      analyticsOverviewOptionsIntegrationResponse,
+      analyticsCodeOptionsIntegrationResponse,
     ],
   }
 );
@@ -753,7 +1000,13 @@ const distribution = new aws.cloudfront.Distribution("frontend-distribution", {
       cachedMethods: ["GET", "HEAD"],
       forwardedValues: {
         queryString: true,
-        headers: ["Authorization", "Content-Type"],
+        headers: [
+          "Authorization",
+          "Content-Type",
+          "CloudFront-Viewer-Country",
+          "CloudFront-Viewer-Country-Region",
+          "CloudFront-Viewer-City",
+        ],
         cookies: {
           forward: "none",
         },
@@ -857,6 +1110,7 @@ if (fs.existsSync(frontendDistPath)) {
 // Exports
 // ========================================
 export const tableName = urlTable.name;
+export const analyticsTableName = analyticsTable.name;
 export const apiUrl = pulumi.interpolate`https://${api.id}.execute-api.${aws.config.region}.amazonaws.com/api`;
 export const frontendBucketName = frontendBucket.id;
 export const websiteUrl = frontendBucketWebsite.websiteEndpoint;
