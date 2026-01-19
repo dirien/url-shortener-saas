@@ -90,11 +90,7 @@ A production-ready URL Shortener SaaS built with Pulumi TypeScript, AWS Lambda, 
 
 4. **Build Lambda functions**:
    ```bash
-   cd lambda
-   npx esbuild shorten.ts redirect.ts stats.ts list.ts delete.ts \
-     --bundle --platform=node --target=node20 --outdir=. --format=cjs \
-     --external:@aws-sdk/client-dynamodb --external:@aws-sdk/lib-dynamodb
-   cd ..
+   cd lambda && npm run build && cd ..
    ```
 
 5. **Deploy with Pulumi**:
@@ -112,6 +108,20 @@ cd lambda && npm test
 ### Test Coverage
 ```bash
 cd lambda && npm run test:coverage
+```
+
+### E2E Tests
+
+E2E tests are defined in `e2e.md` and can be run using the `agent-browser` CLI tool:
+
+```bash
+# Install agent-browser
+npm install -g agent-browser
+
+# Run tests manually following prompts in e2e.md
+agent-browser open https://d1232drths1aav.cloudfront.net
+agent-browser snapshot -i
+# ... follow test steps
 ```
 
 ## Project Structure
@@ -136,7 +146,10 @@ url-shortener/
 │   ├── utils.ts          # Shared utilities
 │   ├── utils.test.ts     # Unit tests
 │   ├── handlers.test.ts  # Integration tests
+│   ├── dist/             # Compiled JavaScript (generated)
 │   └── package.json
+├── e2e.md                # E2E test prompts
+├── screenshots/          # E2E test screenshots
 └── package.json
 ```
 
