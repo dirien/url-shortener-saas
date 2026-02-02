@@ -2,10 +2,6 @@
 
 A production-ready URL Shortener SaaS built with Pulumi TypeScript, AWS Lambda, DynamoDB, API Gateway, CloudFront, and React.
 
-## Live Demo
-
-**CloudFront URL**: https://d1232drths1aav.cloudfront.net
-
 ## Features
 
 - **URL Shortening**: Create short URLs with auto-generated or custom aliases
@@ -133,7 +129,8 @@ E2E tests are defined in `e2e.md` and can be run using the `agent-browser` CLI t
 npm install -g agent-browser
 
 # Run tests manually following prompts in e2e.md
-agent-browser open https://d1232drths1aav.cloudfront.net
+# Replace {CLOUDFRONT_URL} with the URL from `pulumi up` output
+agent-browser open {CLOUDFRONT_URL}
 agent-browser snapshot -i
 # ... follow test steps
 ```

@@ -4,13 +4,13 @@ Use the `/agent-browser` skill to run these tests.
 
 ## Configuration
 
-- **CloudFront URL**: https://d1232drths1aav.cloudfront.net
-- **API URL**: https://jem6p0u7al.execute-api.us-east-1.amazonaws.com/api
+- **CloudFront URL**: `<your-cloudfront-url>` (run `pulumi up` to get this value)
+- **API URL**: `<your-api-url>` (run `pulumi up` to get this value)
 
 ## Test 1: Homepage Load
 
 ```
-Navigate to https://d1232drths1aav.cloudfront.net and verify the page loads correctly.
+Navigate to {CLOUDFRONT_URL} and verify the page loads correctly.
 Take a screenshot and confirm:
 1. The page title contains "Snip.ly" or "URL Shortener"
 2. There is an input field for entering URLs
@@ -20,7 +20,7 @@ Take a screenshot and confirm:
 ## Test 2: Shorten a URL
 
 ```
-Navigate to https://d1232drths1aav.cloudfront.net and:
+Navigate to {CLOUDFRONT_URL} and:
 1. Find the URL input field
 2. Enter the URL: https://example.com/e2e-test-{timestamp}
 3. Click the "Shorten URL" or "Create Short URL" button
@@ -32,7 +32,7 @@ Navigate to https://d1232drths1aav.cloudfront.net and:
 ## Test 3: Dashboard View
 
 ```
-Navigate to https://d1232drths1aav.cloudfront.net/dashboard and:
+Navigate to {CLOUDFRONT_URL}/dashboard and:
 1. Wait for the page to load completely (networkidle)
 2. Take a screenshot
 3. Verify the "Your URLs" section is visible
@@ -47,8 +47,8 @@ Navigate to https://d1232drths1aav.cloudfront.net/dashboard and:
 
 ```
 Test the API directly by:
-1. Navigate to any page on https://d1232drths1aav.cloudfront.net
-2. Use JavaScript fetch to call GET https://d1232drths1aav.cloudfront.net/api/urls
+1. Navigate to any page on {CLOUDFRONT_URL}
+2. Use JavaScript fetch to call GET {CLOUDFRONT_URL}/api/urls
 3. Verify the response status is 200
 4. Verify the response contains a "urls" array
 5. Log the number of URLs returned
@@ -59,7 +59,7 @@ Test the API directly by:
 ```
 Perform a complete end-to-end test:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net
+1. Navigate to {CLOUDFRONT_URL}
 2. Take a screenshot of the homepage
 3. Find and fill the URL input with: https://playwright-test.example.com/full-e2e
 4. Click the shorten/create button
@@ -76,7 +76,7 @@ Perform a complete end-to-end test:
 ```
 Test creating a URL with a custom alias:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+1. Navigate to {CLOUDFRONT_URL}/dashboard
 2. Find the "Long URL" input and enter: https://example.com/custom-alias-test
 3. Find the "Custom Alias" input and enter: my-custom-link-{random}
 4. Click "Create Short URL"
@@ -90,9 +90,9 @@ Test creating a URL with a custom alias:
 Test that shortened URLs redirect correctly:
 
 1. First, call the API to get the list of URLs:
-   GET https://d1232drths1aav.cloudfront.net/api/urls
+   GET {CLOUDFRONT_URL}/api/urls
 2. Pick a shortCode from the response
-3. Navigate to https://d1232drths1aav.cloudfront.net/api/{shortCode}
+3. Navigate to {CLOUDFRONT_URL}/api/{shortCode}
 4. Verify the page redirects to the original URL
 5. Report the redirect chain
 ```
@@ -102,7 +102,7 @@ Test that shortened URLs redirect correctly:
 ```
 Test error handling for invalid inputs:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net
+1. Navigate to {CLOUDFRONT_URL}
 2. Try to shorten an invalid URL (e.g., "not-a-url")
 3. Take a screenshot
 4. Verify an appropriate error message is displayed
@@ -121,7 +121,7 @@ The following tests verify the analytics dashboard feature. See `feature-prompt.
 ```
 Test that the analytics page is accessible from navigation:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net
+1. Navigate to {CLOUDFRONT_URL}
 2. Find and click the "Analytics" link in the navigation bar
 3. Verify the URL changed to /analytics
 4. Take a screenshot
@@ -135,7 +135,7 @@ Test that the analytics page is accessible from navigation:
 ```
 Test that the analytics overview page loads with data:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+1. Navigate to {CLOUDFRONT_URL}/analytics
 2. Wait for the page to fully load (network idle)
 3. Take a screenshot
 4. Verify the following elements are present:
@@ -152,7 +152,7 @@ Test that the analytics overview page loads with data:
 ```
 Test the date range filter functionality:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+1. Navigate to {CLOUDFRONT_URL}/analytics
 2. Wait for the page to load
 3. Find the date range picker/selector
 4. Select "Last 30 days" option
@@ -169,7 +169,7 @@ Test the date range filter functionality:
 ```
 Test viewing analytics for a specific shortened URL:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+1. Navigate to {CLOUDFRONT_URL}/dashboard
 2. Wait for the URL list to load
 3. Find a URL row with a "View Analytics" or analytics icon button
 4. Click the analytics button for that URL
@@ -187,7 +187,7 @@ Test viewing analytics for a specific shortened URL:
 ```
 Test that all analytics charts render correctly:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+1. Navigate to {CLOUDFRONT_URL}/analytics
 2. Wait for the page to fully load
 3. Verify the timeline/line chart:
    - Has visible axes (X and Y)
@@ -215,7 +215,7 @@ Test that all analytics charts render correctly:
 ```
 Test analytics page responsive behavior:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+1. Navigate to {CLOUDFRONT_URL}/analytics
 2. Wait for the page to load
 3. Set viewport to desktop size (1280x800)
 4. Take a screenshot
@@ -236,7 +236,7 @@ Test analytics page responsive behavior:
 ```
 Test the analytics API endpoints directly:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net
+1. Navigate to {CLOUDFRONT_URL}
 2. Use JavaScript fetch to call GET /api/analytics/overview
 3. Verify response status is 200
 4. Verify the response contains:
@@ -257,11 +257,11 @@ Test the analytics API endpoints directly:
 ```
 Prerequisite test to generate analytics data:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+1. Navigate to {CLOUDFRONT_URL}/dashboard
 2. Create a new short URL with a unique alias (e.g., "analytics-test-{timestamp}")
 3. Note the short code returned
 4. Open the short URL 5 times in sequence:
-   - Visit https://d1232drths1aav.cloudfront.net/api/{shortCode}
+   - Visit {CLOUDFRONT_URL}/api/{shortCode}
    - Wait for redirect to complete
    - Repeat 4 more times
 5. Navigate to /analytics/{shortCode}
@@ -275,7 +275,7 @@ Prerequisite test to generate analytics data:
 ```
 Test analytics display when no data is available:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/dashboard
+1. Navigate to {CLOUDFRONT_URL}/dashboard
 2. Create a brand new short URL with unique alias
 3. Immediately navigate to /analytics/{newShortCode}
 4. Verify the page handles the empty/zero state gracefully:
@@ -291,7 +291,7 @@ Test analytics display when no data is available:
 ```
 Test analytics page in dark mode:
 
-1. Navigate to https://d1232drths1aav.cloudfront.net/analytics
+1. Navigate to {CLOUDFRONT_URL}/analytics
 2. Wait for the page to load
 3. Find and click the dark mode toggle
 4. Wait for theme to switch
